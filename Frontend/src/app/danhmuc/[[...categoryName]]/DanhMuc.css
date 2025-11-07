@@ -1,0 +1,14 @@
+.category_button {
+    background-color: rgba(255, 149, 0, 0.1);
+    border-radius: 11px;
+}
+
+.category_button:hover {
+    background-color: rgba(255, 149, 0, 0.72);
+    border-radius: 11px;
+}
+
+.category_selected {
+    background-color: rgba(255, 149, 0, 0.72);
+    border-radius: 11px;
+}
