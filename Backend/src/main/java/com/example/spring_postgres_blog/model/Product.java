@@ -1,6 +1,8 @@
 package com.example.spring_postgres_blog.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +25,7 @@ public class Product {
     private String category;
     private String imageUrl;
     private String imagePublicId;
+    private Integer stock;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -124,6 +127,14 @@ public class Product {
 
     public void setImagePublicId(String imagePublicId) {
         this.imagePublicId = imagePublicId;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 
     public LocalDateTime getCreatedAt() {
