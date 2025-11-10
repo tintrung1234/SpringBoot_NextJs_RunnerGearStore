@@ -16,7 +16,7 @@ interface User {
 
 interface FavoriteToggleProduct {
     productId: string;
-    productTitle: string;
+    productTitle?: string;
 }
 
 export default function ToggleFavorite({ productId, productTitle }: FavoriteToggleProduct) {

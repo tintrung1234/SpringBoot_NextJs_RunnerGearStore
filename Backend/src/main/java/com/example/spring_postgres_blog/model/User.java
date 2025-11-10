@@ -24,7 +24,7 @@ public class User {
     private String role = "User";
 
     @Column(name = "favorites_post", columnDefinition = "text[]")
-    private String[] favoritesPost = new String[]{};
+    private String[] favoritesPost = new String[] {};
 
     public Long getId() {
         return id;
