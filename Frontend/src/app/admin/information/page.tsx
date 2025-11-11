@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN;
 
 interface InfoType {
-    _id: string;
+    id: string;
     email: string;
     phoneNumber: number;
 }
@@ -53,7 +53,7 @@ export default function Admin_EditInformation() {
     const handleCreate = async () => {
         try {
             const token = Cookies.get("token");
-            await axios.post(`${DOMAIN}/api/information/create`, {
+            await axios.post(`${DOMAIN}/api/information`, {
                 ...formData,
                 phoneNumber: Number(formData.phoneNumber),
             }, {
@@ -69,7 +69,7 @@ export default function Admin_EditInformation() {
     const handleUpdate = async () => {
         try {
             const token = Cookies.get("token");
-            await axios.put(`${DOMAIN}/api/information/update/${info?._id}`, {
+            await axios.put(`${DOMAIN}/api/information/${info?.id}`, {
                 ...formData,
                 phoneNumber: Number(formData.phoneNumber),
             }, {
@@ -86,7 +86,7 @@ export default function Admin_EditInformation() {
         if (!confirm("Bạn có chắc muốn xóa không?")) return;
         try {
             const token = Cookies.get("token");
-            await axios.delete(`${DOMAIN}/api/information/delete/${info?._id}`, {
+            await axios.delete(`${DOMAIN}/api/information/${info?.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success("Xóa thông tin thành công.");
@@ -96,7 +96,7 @@ export default function Admin_EditInformation() {
             toast.error("Xóa thông tin thất bại.");
         }
     };
-    
+
     return (
         <div className="p-6 max-w-xl mx-auto border rounded-lg shadow">
             <h2 className="text-2xl font-bold mb-4">Information</h2>

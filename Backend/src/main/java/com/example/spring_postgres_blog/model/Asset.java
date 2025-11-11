@@ -11,17 +11,17 @@ public class Asset {
     private Long id;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String image_url;
 
     @Column(name = "image_public_id")
-    private String imagePublicId;
+    private String image_public_id;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Asset(String imageUrl, String imagePublicId) {
-        this.imageUrl = imageUrl;
-        this.imagePublicId = imagePublicId;
+    public Asset(String image_url, String image_public_id) {
+        this.image_url = image_url;
+        this.image_public_id = image_public_id;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -31,19 +31,19 @@ public class Asset {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return image_url;
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+        this.image_url = imageUrl;
     }
 
     public String getImagePublicId() {
-        return imagePublicId;
+        return image_public_id;
     }
 
     public void setImagePublicId(String imagePublicId) {
-        this.imagePublicId = imagePublicId;
+        this.image_public_id = imagePublicId;
     }
 
     public LocalDateTime getCreatedAt() {

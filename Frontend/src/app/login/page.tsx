@@ -55,7 +55,7 @@ export default function Login() {
         }
 
         try {
-            await axios.post(`${DOMAIN}/api/user/register`, {
+            await axios.post(`${DOMAIN}/api/users/register`, {
                 email: registerForm.email,
                 username: registerForm.username,
                 password: registerForm.password,
@@ -85,25 +85,19 @@ export default function Login() {
         }
 
         try {
-            const res = await axios.post(`${DOMAIN}/api/user/login`, {
+            const res = await axios.post(`${DOMAIN}/api/users/login`, {
                 email: loginForm.email,
                 password: loginForm.password,
             });
 
+            console.log("Login response data:", res.data);
+
             const user = res.data.user;
             const token = res.data.token;
 
-            Cookies.set("token", token, {
-                expires: 1, // 1 ngày
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
-            });
-
-            Cookies.set("user", JSON.stringify(user), {
-                expires: 1,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
-            });
+            // Đơn giản hóa - chỉ set expires
+            Cookies.set("token", token, { expires: 1 });
+            Cookies.set("user", JSON.stringify(user), { expires: 1 });
 
             toast.dismiss(toastId);
             toast.success("Đăng nhập thành công!");
@@ -112,7 +106,7 @@ export default function Login() {
                 if (user.role === "Admin") {
                     router.push("/admin");
                 } else {
-                    router.push("/");
+                    router.push("/taikhoan");
                 }
             }, 500);
         } catch (err: unknown) {

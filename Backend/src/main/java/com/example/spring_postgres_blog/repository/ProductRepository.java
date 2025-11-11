@@ -25,10 +25,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """)
     List<Product> searchByQuery(String query);
 
-    @Query(value = "SELECT * FROM product ORDER BY discount DESC LIMIT 2", nativeQuery = true)
+    @Query(value = "SELECT * FROM products ORDER BY discount DESC LIMIT 2", nativeQuery = true)
     List<Product> findTop2ByOrderByDiscountDesc();
 
-    @Query(value = "SELECT * FROM product WHERE discount > 0 ORDER BY discount DESC LIMIT 20", nativeQuery = true)
+    @Query(value = "SELECT * FROM products WHERE discount > 0 ORDER BY discount DESC LIMIT 20", nativeQuery = true)
     List<Product> findAllByOrderByDiscountDesc();
 
     boolean existsBySlug(String slug);

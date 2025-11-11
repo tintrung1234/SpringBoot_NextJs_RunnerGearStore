@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,12 +8,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
 
-// Define interface for asset data
 interface Asset {
-    _id: string;
-    imageUrl: string;
+    id: string;
+    image_url: string;
 }
-
 
 export default function Admin_EditAssets() {
     const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN;
@@ -26,7 +23,6 @@ export default function Admin_EditAssets() {
     const [uploading, setUploading] = useState<boolean>(false);
     const [assets, setAssets] = useState<Asset[]>([]);
 
-    // Set preview or fallback image
     useEffect(() => {
         if (imageFile) {
             const reader = new FileReader();
@@ -41,7 +37,6 @@ export default function Admin_EditAssets() {
         }
     }, [imageFile]);
 
-    // Fetch current assets
     const fetchAssets = async () => {
         try {
             const res = await axios.get<Asset[]>(`${DOMAIN}/api/assets`);
@@ -53,8 +48,10 @@ export default function Admin_EditAssets() {
     };
 
     useEffect(() => {
-        fetchAssets();
-    }, []);
+        if (DOMAIN) {
+            fetchAssets();
+        }
+    }, [DOMAIN]);
 
     const handleSubmit = async () => {
         if (!imageFile) {
@@ -69,27 +66,31 @@ export default function Admin_EditAssets() {
         }
 
         const data = new FormData();
-        data.append('image', imageFile);
+        data.append('file', imageFile); // Changed from 'image' to 'file'
 
         try {
             setUploading(true);
-            await axios.post(`${DOMAIN}/api/assets/create`, data, {
+            const toastId = toast.loading('Đang tải lên...');
+
+            await axios.post(`${DOMAIN}/api/assets`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
+                    // Don't set Content-Type - let axios handle it
                 },
             });
+
+            toast.dismiss(toastId);
+            toast.success('Cập nhật tài sản thành công!');
 
             setImageFile(null);
             setImageError('');
             setPreview(
                 'https://res.cloudinary.com/daeorkmlh/image/upload/v1750835215/No-Image-Placeholder.svg_v0th8g.png'
             );
-            fetchAssets(); // Refresh list
-            toast.success('Cập nhật tài sản thành công!');
-        } catch (err) {
+            fetchAssets();
+        } catch (err: unknown) {
             console.error('Upload failed:', err);
-            toast.error('Cập nhật tài sản thất bại.');
+            toast.error(axios.isAxiosError(err) ? err?.response?.data?.message || 'Cập nhật tài sản thất bại.' : 'Cập nhật tài sản thất bại.');
         } finally {
             setUploading(false);
         }
@@ -97,15 +98,20 @@ export default function Admin_EditAssets() {
 
     const handleDelete = async (id: string) => {
         if (!confirm('Bạn có chắc muốn xóa không?')) return;
+
         try {
-            await axios.delete(`${DOMAIN}/api/assets/delete/${id}`, {
+            const toastId = toast.loading('Đang xóa...');
+
+            await axios.delete(`${DOMAIN}/api/assets/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            fetchAssets();
+
+            toast.dismiss(toastId);
             toast.success('Xóa hình ảnh thành công!');
-        } catch (err) {
+            fetchAssets();
+        } catch (err: unknown) {
             console.error('Delete failed:', err);
-            toast.error('Xóa hình ảnh thất bại.');
+            toast.error(axios.isAxiosError(err) ? err?.response?.data?.message || 'Xóa hình ảnh thất bại.' : 'Xóa hình ảnh thất bại.');
         }
     };
 
@@ -114,23 +120,23 @@ export default function Admin_EditAssets() {
             <ToastContainer />
             <h2 className="text-2xl font-bold mb-4">Thêm tài sản mới</h2>
 
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-3 gap-4 mb-6">
                 {assets.map((asset) => (
                     <div
-                        key={asset._id}
+                        key={asset.id}
                         className="border rounded p-2 relative shadow-md"
                     >
                         <div className='w-full h-40 relative'>
                             <Image
                                 fill
-                                src={asset.imageUrl}
+                                src={asset.image_url}
                                 alt="Assets Image"
                                 className="object-cover rounded"
                             />
                         </div>
                         <div className="mt-2 flex gap-2">
                             <button
-                                onClick={() => handleDelete(asset._id)}
+                                onClick={() => handleDelete(asset.id)}
                                 className="bg-red-500 hover:bg-red-600 px-3 cursor-pointer py-1 rounded text-sm text-white"
                             >
                                 Xóa
@@ -140,7 +146,6 @@ export default function Admin_EditAssets() {
                 ))}
             </div>
 
-            {/* Image Upload Field */}
             <div className="p-3">
                 <label className="block font-semibold text-[24px]">Hình ảnh</label>
                 <ImagePostDropzone

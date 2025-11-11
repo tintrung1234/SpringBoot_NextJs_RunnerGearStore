@@ -14,7 +14,7 @@ export default function Admin_UseEditUser() {
     const fetchUsers = async () => {
         try {
             const token = Cookies.get("token");
-            const res = await axios.get(`${DOMAIN}/api/user`, {
+            const res = await axios.get(`${DOMAIN}/api/users`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

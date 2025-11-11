@@ -9,8 +9,8 @@ import Image from "next/image";
 import Cookies from "js-cookie";
 
 interface bannerType {
-    _id: string;
-    imageUrl: string;
+    id: string;
+    image_url: string;
 }
 export default function Admin_EditBanner() {
     const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN;
@@ -25,7 +25,7 @@ export default function Admin_EditBanner() {
     useEffect(() => {
         // Ensure token is read from client only
         const t = Cookies.get("token");
-        setToken(t ??null);
+        setToken(t ?? null);
     }, []);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function Admin_EditBanner() {
 
     const fetchBanners = async () => {
         try {
-            const res = await axios.get(`${DOMAIN}/api/banner`);
+            const res = await axios.get(`${DOMAIN}/api/banners`);
             setBanners(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error("Fetch banners failed", err);
@@ -73,14 +73,13 @@ export default function Admin_EditBanner() {
         }
 
         const data = new FormData();
-        data.append("image", imageFile);
+        data.append("file", imageFile);
 
         try {
             setUploading(true);
-            await axios.post(`${DOMAIN}/api/banner/create`, data, {
+            await axios.post(`${DOMAIN}/api/banners`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
                 },
             });
 
@@ -99,7 +98,7 @@ export default function Admin_EditBanner() {
     const handleDelete = async (id: string) => {
         if (!confirm("Bạn có chắc muốn xóa không?")) return;
         try {
-            await axios.delete(`${DOMAIN}/api/banner/delete/${id}`, {
+            await axios.delete(`${DOMAIN}/api/banners/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             fetchBanners();
@@ -117,20 +116,20 @@ export default function Admin_EditBanner() {
             <div className="grid sm:grid-cols-3 gap-4 mb-8">
                 {banners.map((banner) => (
                     <div
-                        key={banner._id}
+                        key={banner.id}
                         className="border rounded p-2 relative shadow-md"
                     >
                         <div className="relative w-full h-40">
                             <Image
                                 fill
-                                src={banner.imageUrl}
+                                src={banner.image_url}
                                 alt="Banner"
                                 className="object-cover rounded"
                             />
                         </div>
                         <div className="mt-2 flex gap-2">
                             <button
-                                onClick={() => handleDelete(banner._id)}
+                                onClick={() => handleDelete(banner.id)}
                                 className="bg-red-500 hover:bg-red-600 px-3 cursor-pointer py-1 rounded text-sm text-white"
                             >
                                 Delete

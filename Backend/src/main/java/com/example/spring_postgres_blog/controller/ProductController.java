@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
+@CrossOrigin(origins = { "${app.frontend.url}" })
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {

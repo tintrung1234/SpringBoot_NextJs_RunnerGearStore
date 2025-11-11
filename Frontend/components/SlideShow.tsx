@@ -5,7 +5,7 @@ import './SlideShow.css';
 import axios from 'axios';
 
 interface Banner {
-  imageUrl: string;
+  image_url: string;
 }
 
 export default function SlideShow() {
@@ -15,7 +15,7 @@ export default function SlideShow() {
 
   const fetchBanners = async () => {
     try {
-      const res = await axios.get(`${DOMAIN}/api/banner`);
+      const res = await axios.get(`${DOMAIN}/api/banners`);
       if (Array.isArray(res.data)) {
         setBanners(res.data);
       } else {
@@ -51,11 +51,10 @@ export default function SlideShow() {
         {banners.map((banner, index) => (
           <img
             key={index}
-            src={banner.imageUrl}
+            src={banner.image_url}
             alt={`Slide ${index + 1}`}
-            className={`absolute top-0 left-0 w-full object-cover h-full rounded-[2vw] transition-opacity duration-500 ease-in-out ${
-              index === currentIndex ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute top-0 left-0 w-full object-fit h-full rounded-[2vw] transition-opacity duration-500 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'
+              }`}
           />
         ))}
       </div>
@@ -66,9 +65,8 @@ export default function SlideShow() {
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-              index === currentIndex ? 'bg-white' : 'bg-gray-400'
-            }`}
+            className={`w-3 h-3 rounded-full transition-colors duration-300 ${index === currentIndex ? 'bg-white' : 'bg-gray-400'
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

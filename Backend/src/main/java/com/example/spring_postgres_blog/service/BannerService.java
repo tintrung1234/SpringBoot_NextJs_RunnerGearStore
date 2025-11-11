@@ -22,22 +22,22 @@ public class BannerService {
     public List<Banner> getAllBanners() {
         return bannerRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparing(Banner::getCreatedAt).reversed())
+                .sorted(Comparator.comparing(Banner::getcreated_at).reversed())
                 .toList();
     }
 
     public Banner createBanner(MultipartFile file) throws Exception {
-        String imageUrl = "";
-        String imagePublicId = "";
+        String image_url = "";
+        String image_public_id = "";
 
         if (file != null && !file.isEmpty()) {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
                     ObjectUtils.asMap("folder", "banners"));
-            imageUrl = uploadResult.get(uploadResult.get("secure_url")).toString();
-            imagePublicId = uploadResult.get("public_id").toString();
+            image_url = uploadResult.get(uploadResult.get("secure_url")).toString();
+            image_public_id = uploadResult.get("public_id").toString();
         }
 
-        Banner banner = new Banner(imageUrl, imagePublicId);
+        Banner banner = new Banner(image_url, image_public_id);
         return bannerRepository.save(banner);
     }
 

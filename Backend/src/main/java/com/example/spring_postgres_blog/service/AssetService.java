@@ -27,17 +27,17 @@ public class AssetService {
     }
 
     public Asset createAsset(MultipartFile file) throws Exception {
-        String imageUrl = "";
-        String imagePublicId = "";
+        String image_url = "";
+        String image_public_id = "";
 
         if (file != null && !file.isEmpty()) {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
                     ObjectUtils.asMap("folder", "assets"));
-            imageUrl = uploadResult.get(uploadResult.get("secure_url")).toString();
-            imagePublicId = uploadResult.get("public_id").toString();
+            image_url = uploadResult.get(uploadResult.get("secure_url")).toString();
+            image_public_id = uploadResult.get("public_id").toString();
         }
 
-        Asset asset = new Asset(imageUrl, imagePublicId);
+        Asset asset = new Asset(image_url, image_public_id);
         return assetRepository.save(asset);
     }
 

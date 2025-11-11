@@ -42,39 +42,39 @@ export default function UserForm({ users = [], fetchUsers }: UserFormProps) {
     };
 
     const handleSubmit = async () => {
-    const toastId = toast.loading(isEdit ? "Đang cập nhật user..." : "Đang tạo user...");
-    const token = Cookies.get("token");
+        const toastId = toast.loading(isEdit ? "Đang cập nhật user..." : "Đang tạo user...");
+        const token = Cookies.get("token");
 
-    try {
-        if (isEdit && selectedUserId) {
-            await axios.put(`${DOMAIN}/api/user/update`, {
-                ...formData,
-                _id: selectedUserId,
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            toast.success("Cập nhật user thành công!");
-        } else {
-            await axios.post(`${DOMAIN}/api/user/register`, formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            toast.success("Tạo user thành công!");
-        }
+        try {
+            if (isEdit && selectedUserId) {
+                await axios.put(`${DOMAIN}/api/users/update`, {
+                    ...formData,
+                    _id: selectedUserId,
+                }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success("Cập nhật user thành công!");
+            } else {
+                await axios.post(`${DOMAIN}/api/users/register`, formData, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success("Tạo user thành công!");
+            }
 
-        toast.dismiss(toastId);
-        fetchUsers();
-        resetForm();
-    } catch (err) {
-        toast.dismiss(toastId);
-        if (axios.isAxiosError(err)) {
-            toast.error("Lỗi: " + (err.response?.data?.message || err.message));
-        } else if (err instanceof Error) {
-            toast.error("Lỗi: " + err.message);
-        } else {
-            toast.error("Đã xảy ra lỗi không xác định.");
+            toast.dismiss(toastId);
+            fetchUsers();
+            resetForm();
+        } catch (err) {
+            toast.dismiss(toastId);
+            if (axios.isAxiosError(err)) {
+                toast.error("Lỗi: " + (err.response?.data?.message || err.message));
+            } else if (err instanceof Error) {
+                toast.error("Lỗi: " + err.message);
+            } else {
+                toast.error("Đã xảy ra lỗi không xác định.");
+            }
         }
-    }
-};
+    };
 
 
     const handleEditClick = (user: User) => {

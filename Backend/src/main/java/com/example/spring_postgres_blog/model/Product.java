@@ -1,6 +1,8 @@
 package com.example.spring_postgres_blog.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,8 +23,9 @@ public class Product {
     private Double rating;
     private String url;
     private String category;
-    private String imageUrl;
-    private String imagePublicId;
+    private String image_url;
+    private String image_public_id;
+    private Integer stock;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -38,7 +41,7 @@ public class Product {
         this.id = id;
     }
 
-    public String getSlug(String slug) {
+    public String getSlug() {
         return slug;
     }
 
@@ -111,19 +114,27 @@ public class Product {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return image_url;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrl(String image_url) {
+        this.image_url = image_url;
     }
 
     public String getImagePublicId() {
-        return imagePublicId;
+        return image_public_id;
     }
 
-    public void setImagePublicId(String imagePublicId) {
-        this.imagePublicId = imagePublicId;
+    public void setImagePublicId(String image_public_id) {
+        this.image_public_id = image_public_id;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 
     public LocalDateTime getCreatedAt() {

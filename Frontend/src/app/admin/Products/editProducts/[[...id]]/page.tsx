@@ -14,19 +14,19 @@ const RichTextEditor = dynamic(() => import('@/app/admin/Admin_components/RichEd
 });
 
 interface ProductType {
-    _id: string;
-    imageUrl: string;
+    id: string;
+    image_url: string;
     title: string;
     description: string;
     discount: number;
     price: number;
     views?: number;
     rating?: number;
-    URL?: number;
+    slug?: number;
 }
 
 interface CateType {
-    _id: string;
+    id: string;
     title: string;
 }
 
@@ -34,7 +34,7 @@ export default function ProductForm() {
     const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN;
 
     const [isEdit, setIsEdit] = useState(false);
-    const [selectedProductId, setSelectedProductId] = useState("");
+    const [selectedProductslug, setSelectedProductslug] = useState("");
     const [formData, setFormData] = useState({
         title: "",
         price: "",
@@ -43,26 +43,26 @@ export default function ProductForm() {
         discount: "",
         views: "",
         rating: "",
-        imageUrl: "",
-        URL: "",
+        image_url: "",
+        slug: "",
     });
     // const navigate = useNavigate();
     const params = useParams();
-    const productId = params.id as string;
+    const slugParams = params.slug as string;
     const [products, setProducts] = useState<ProductType[]>([]);
 
     useEffect(() => {
-        if (productId) {
-            setSelectedProductId(productId);
+        if (slugParams) {
+            setSelectedProductslug(slugParams);
         }
-    }, [productId]);
+    }, [slugParams]);
 
     useEffect(() => {
-        const id = productId || selectedProductId;
-        if (id) {
+        const slug = slugParams || selectedProductslug;
+        if (slug) {
 
             setIsEdit(true);
-            axios.get(`${DOMAIN}/api/products/detail/${id}`).then((res) => {
+            axios.get(`${DOMAIN}/api/products/detail/${slug}`).then((res) => {
                 const p = res.data;
                 if (!p) {
                     toast.error("Không tìm thấy sản phẩm");
@@ -77,20 +77,20 @@ export default function ProductForm() {
                     views: p.views ?? "",
                     rating: p.rating ?? "",
                     category: p.category || "",
-                    imageUrl: p.imageUrl || "",
-                    URL: p.URL || "",
+                    image_url: p.image_url || "",
+                    slug: p.slug || "",
                 });
-                setPreview(p.imageUrl || "");
+                setPreview(p.image_url || "");
             });
         }
 
-    }, [DOMAIN, productId, selectedProductId]);
+    }, [DOMAIN, slugParams, selectedProductslug]);
 
     useEffect(() => {
         // Luôn fetch toàn bộ product khi vào trang
         const fetchProducts = async () => {
             try {
-                const res = await axios.get(`${DOMAIN}/api/products/`);
+                const res = await axios.get(`${DOMAIN}/api/products`);
                 setProducts(res.data);
             } catch (err) {
                 console.error("Lỗi khi tải sản phẩm:", err);
@@ -102,8 +102,8 @@ export default function ProductForm() {
 
 
     useEffect(() => {
-        if (isEdit && productId) {
-            axios.get(`${DOMAIN}/api/products/search?q=${productId}`).then((res) => {
+        if (isEdit && slugParams) {
+            axios.get(`${DOMAIN}/api/products/search?q=${slugParams}`).then((res) => {
                 const p = res.data;
                 setFormData({
                     title: p.title || "",
@@ -113,13 +113,13 @@ export default function ProductForm() {
                     views: p.views?.toString() || "",
                     rating: p.rating?.toString() || "",
                     category: p.category || "",
-                    imageUrl: p.imageUrl || "",
-                    URL: p.URL || "",
+                    image_url: p.image_url || "",
+                    slug: p.slug || "",
                 });
-                setPreview(p.imageUrl || "");
+                setPreview(p.image_url || "");
             });
         }
-    }, [isEdit, productId, DOMAIN]);
+    }, [isEdit, slugParams, DOMAIN]);
 
     const [Categories, setCategories] = useState<CateType[]>([]);
 
@@ -151,19 +151,18 @@ export default function ProductForm() {
             const reader = new FileReader();
             reader.onloadend = () => setPreview(reader.result as string);
             reader.readAsDataURL(imageFile);
-        } else if (!formData.imageUrl) {
+        } else if (!formData.image_url) {
             setPreview(
                 "https://res.cloudinary.com/daeorkmlh/image/upload/v1750835215/No-Image-Placeholder.svg_v0th8g.png"
             );
         } else {
-            setPreview(formData.imageUrl);
+            setPreview(formData.image_url);
         }
-    }, [imageFile, formData.imageUrl]);
+    }, [imageFile, formData.image_url]);
 
     const handleSubmit = async () => {
         try {
             const data = new FormData();
-            data.append("uid", "test");
             data.append("title", formData.title);
             data.append("price", formData.price);
             data.append("description", formData.description);
@@ -174,25 +173,19 @@ export default function ProductForm() {
             if (imageFile) {
                 data.append("image", imageFile);
             }
-            data.append("URL", formData.URL);
+            data.append("slug", formData.slug);
 
             const toastId = toast.loading(isEdit ? "Đang cập nhật sản phẩm..." : "Đang đăng sản phẩm...");
 
-            if (isEdit && selectedProductId) {
-                await axios.put(`${DOMAIN}/api/products/update/${selectedProductId}`, data, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
+            if (isEdit && selectedProductslug) {
+                await axios.put(`${DOMAIN}/api/products/update/${selectedProductslug}`, data);
+                // Remove the headers config - let axios set it automatically
                 toast.dismiss(toastId);
                 toast.success("Cập nhật sản phẩm thành công!");
             } else {
-                // ✅ CREATE new product
-                await axios.post(`${DOMAIN}/api/products/create`, data, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
+                // CREATE new product
+                await axios.post(`${DOMAIN}/api/products/create`, data);
+                // Remove the headers config - let axios set it automatically
                 toast.dismiss(toastId);
                 toast.success("Đăng sản phẩm thành công!");
             }
@@ -206,12 +199,12 @@ export default function ProductForm() {
                 views: "",
                 rating: "",
                 category: "",
-                imageUrl: "",
-                URL: "",
+                image_url: "",
+                slug: "",
             });
             setImageFile(null);
             setPreview("https://res.cloudinary.com/daeorkmlh/image/upload/v1750835215/No-Image-Placeholder.svg_v0th8g.png");
-            setSelectedProductId("");
+            setSelectedProductslug("");
             setIsEdit(false);
         } catch (err) {
             console.error("Update error:", err);
@@ -220,7 +213,7 @@ export default function ProductForm() {
     };
 
     const handleDelete = async () => {
-        if (!selectedProductId) return;
+        if (!selectedProductslug) return;
 
         const confirmed = window.confirm("Bạn có chắc chắn muốn xoá sản phẩm này?");
         if (!confirmed) return;
@@ -228,13 +221,13 @@ export default function ProductForm() {
         try {
             const toastId = toast.loading("Đang xoá bài...");
 
-            await axios.delete(`${DOMAIN}/api/products/delete/${selectedProductId}`);
+            await axios.delete(`${DOMAIN}/api/products/delete/${selectedProductslug}`);
 
             toast.dismiss(toastId);
             toast.success("Xoá sản phẩm thành công!");
 
             // Reset form and edit state
-            setSelectedProductId("");
+            setSelectedProductslug("");
             setIsEdit(false);
             setFormData({
                 title: "",
@@ -244,8 +237,8 @@ export default function ProductForm() {
                 views: "",
                 rating: "",
                 category: "",
-                imageUrl: "",
-                URL: "",
+                image_url: "",
+                slug: "",
             });
             setImageFile(null);
             setPreview(
@@ -269,7 +262,7 @@ export default function ProductForm() {
                     className={`cursor-pointer ${!isEdit && "underline"}`}
                     onClick={() => {
                         setIsEdit(false);
-                        setSelectedProductId("");
+                        setSelectedProductslug("");
                         setFormData({
                             title: "",
                             price: "",
@@ -278,8 +271,8 @@ export default function ProductForm() {
                             views: "",
                             rating: "",
                             category: "",
-                            imageUrl: "",
-                            URL: "",
+                            image_url: "",
+                            slug: "",
                         });
                     }}
                 >
@@ -297,7 +290,7 @@ export default function ProductForm() {
                 {isEdit ? (
                     <div>
                         <div>
-                            {productId ? (
+                            {selectedProductslug ? (
                                 <span>Không được chọn sản phẩm khác</span>
                             ) : (
                                 <span>Bạn có thể chọn sản phẩm</span>
@@ -306,12 +299,12 @@ export default function ProductForm() {
                         <label className="font-bold">Chọn sản phẩm</label>
                         <select
                             className="w-full p-2 mt-1 rounded bg-white p-2"
-                            value={selectedProductId}
-                            onChange={(e) => setSelectedProductId(e.target.value)}
+                            value={selectedProductslug}
+                            onChange={(e) => setSelectedProductslug(e.target.value)}
                         >
                             <option value="">-- Chọn --</option>
                             {products.map((product) => (
-                                <option key={product._id} value={product._id}>
+                                <option key={product.id} value={product.slug}>
                                     {product.title}
                                 </option>
                             ))}
@@ -397,7 +390,7 @@ export default function ProductForm() {
                     >
                         <option value="">-- Chọn --</option>
                         {Categories.map(cat => (
-                            <option value={cat.title} key={cat._id}>{cat.title}</option>
+                            <option value={cat.title} key={cat.id}>{cat.title}</option>
                         ))}
                     </select>
                 </div>
@@ -407,7 +400,7 @@ export default function ProductForm() {
                         <input
                             className="w-full p-2 mt-1 rounded bg-white"
                             name="URL"
-                            value={formData.URL}
+                            value={formData.slug}
                             onChange={handleChange}
                             placeholder="https//..."
                         />
@@ -441,7 +434,7 @@ export default function ProductForm() {
                     <div className="text-center">
                         <button onClick={handleSubmit} className="bg-yellow-400 rounded px-4 py-2 font-bold cursor-pointer hover:bg-yellow-600">Lưu</button>
                     </div>
-                    {isEdit && selectedProductId && (
+                    {isEdit && selectedProductslug && (
                         <div className="text-center ml-3">
                             <button
                                 onClick={handleDelete}
