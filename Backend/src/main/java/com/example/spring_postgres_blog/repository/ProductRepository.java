@@ -31,5 +31,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "SELECT * FROM products WHERE discount > 0 ORDER BY discount DESC LIMIT 20", nativeQuery = true)
     List<Product> findAllByOrderByDiscountDesc();
 
+    List<Product> findTop5ByOrderByCreatedAtDesc();
+
+    List<Product> findTop5ByOrderByViewsDesc();
+
     boolean existsBySlug(String slug);
 }
