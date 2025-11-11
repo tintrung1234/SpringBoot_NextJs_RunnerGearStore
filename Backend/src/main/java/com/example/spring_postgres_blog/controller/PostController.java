@@ -2,9 +2,12 @@ package com.example.spring_postgres_blog.controller;
 
 import com.example.spring_postgres_blog.model.Post;
 import com.example.spring_postgres_blog.service.PostService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = { "${app.frontend.url}" })
@@ -46,28 +49,78 @@ public class PostController {
         return postService.getPostsNewest();
     }
 
-    @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postService.createPost(post);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createPost(
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("category") String category,
+            @RequestParam("content") String content,
+            @RequestParam("slug") String slug,
+            @RequestParam(value = "metaTitle", required = false) String metaTitle,
+            @RequestParam(value = "metaDescription", required = false) String metaDescription,
+            @RequestParam(value = "metaKeywords", required = false) String metaKeywords,
+            @RequestParam(value = "metaURL", required = false) String metaURL,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+        try {
+            Post post = new Post();
+            post.setTitle(title);
+            post.setDescription(description);
+            post.setCategory(category);
+            post.setContent(content);
+            post.setSlug(slug);
+            post.setMetaTitle(metaTitle);
+            post.setMetaDescription(metaDescription);
+            post.setMetaKeywords(metaKeywords);
+            post.setMetaURL(metaURL);
+
+            Post createdPost = postService.createPost(post, image);
+            return ResponseEntity.status(201).body(createdPost);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error creating post: " + e.getMessage());
+        }
     }
 
-    @PutMapping("/{slug}")
-    public ResponseEntity<Post> updatePost(@PathVariable String slug, @RequestBody Post post) {
+    @PutMapping(value = "/{slug}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updatePost(
+            @PathVariable String slug,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("category") String category,
+            @RequestParam("content") String content,
+            @RequestParam("slug") String newSlug,
+            @RequestParam(value = "metaTitle", required = false) String metaTitle,
+            @RequestParam(value = "metaDescription", required = false) String metaDescription,
+            @RequestParam(value = "metaKeywords", required = false) String metaKeywords,
+            @RequestParam(value = "metaURL", required = false) String metaURL,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
         try {
-            Post updated = postService.updatePost(slug, post);
+            Post post = new Post();
+            post.setTitle(title);
+            post.setDescription(description);
+            post.setCategory(category);
+            post.setContent(content);
+            post.setSlug(newSlug);
+            post.setMetaTitle(metaTitle);
+            post.setMetaDescription(metaDescription);
+            post.setMetaKeywords(metaKeywords);
+            post.setMetaURL(metaURL);
+
+            Post updated = postService.updatePost(slug, post, image);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body("Error uploading image: " + e.getMessage());
         }
     }
 
     @DeleteMapping("/{slug}")
-    public ResponseEntity<Void> deletePost(@PathVariable String slug) {
+    public ResponseEntity<?> deletePost(@PathVariable String slug) {
         try {
             postService.deletePost(slug);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Post deleted successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 

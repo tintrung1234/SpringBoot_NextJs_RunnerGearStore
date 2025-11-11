@@ -1,11 +1,9 @@
 package com.example.spring_postgres_blog.service;
 
-import com.example.spring_postgres_blog.model.Post;
 import com.example.spring_postgres_blog.model.Product;
 import com.example.spring_postgres_blog.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.text.Normalizer;
 import java.util.List;
@@ -62,8 +60,8 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProduct(Long id, Product updatedProduct) {
-        return productRepository.findById(id).map(product -> {
+    public Product updateProduct(String slug, Product updatedProduct) {
+        return productRepository.findBySlug(slug).map(product -> {
             product.setTitle(updatedProduct.getTitle());
             product.setDescription(updatedProduct.getDescription());
             product.setCategory(updatedProduct.getCategory());
@@ -72,14 +70,25 @@ public class ProductService {
             product.setViews(updatedProduct.getViews());
             product.setRating(updatedProduct.getRating());
             product.setUrl(updatedProduct.getUrl());
-            product.setImageUrl(updatedProduct.getImageUrl());
-            product.setImagePublicId(updatedProduct.getImagePublicId());
+
+            // Only update image if new one is provided
+            if (updatedProduct.getImageUrl() != null && !updatedProduct.getImageUrl().isEmpty()) {
+                product.setImageUrl(updatedProduct.getImageUrl());
+                product.setImagePublicId(updatedProduct.getImagePublicId());
+            }
+
             return productRepository.save(product);
         }).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    public void deleteProductBySlug(String slug) {
+        productRepository.findBySlug(slug).ifPresent(product -> {
+            productRepository.delete(product);
+        });
     }
 
     public List<Product> getTop2DiscountProducts() {
