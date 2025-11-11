@@ -20,14 +20,26 @@ public class User {
     @Column(nullable = false)
     private String username;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime created_at = LocalDateTime.now();
     private String role = "User";
 
     @Column(name = "favorites_post", columnDefinition = "text[]")
-    private String[] favoritesPost = new String[] {};
+    private String[] favorites_post = new String[] {};
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getEmail() {
@@ -55,10 +67,10 @@ public class User {
     }
 
     public String[] getFavoritesPost() {
-        return favoritesPost;
+        return favorites_post;
     }
 
-    public void setFavoritesPost(String[] favoritesPost) {
-        this.favoritesPost = favoritesPost;
+    public void setFavoritesPost(String[] favorites_post) {
+        this.favorites_post = favorites_post;
     }
 }

@@ -22,7 +22,7 @@ async function BlogPage() {
 
     const [postsRes, topPostRes, categoriesRes] = await Promise.all([
         fetch(`${DOMAIN}/api/posts/newest`, { cache: "no-store" }),
-        fetch(`${DOMAIN}/api/posts/topblog`, { cache: "no-store" }),
+        fetch(`${DOMAIN}/api/posts/top1`, { cache: "no-store" }),
         fetch(`${DOMAIN}/api/categories`, { cache: "no-store" }),
     ]);
 

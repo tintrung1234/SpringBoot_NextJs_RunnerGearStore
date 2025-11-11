@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = { "${app.frontend.url}" })
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin(origins = "*")
 public class PostController {
 
     private final PostService postService;
@@ -25,7 +25,7 @@ public class PostController {
 
     @GetMapping("/search")
     public List<Post> searchPosts(@RequestParam(required = false) String q,
-                                  @RequestParam(required = false) String category) {
+            @RequestParam(required = false) String category) {
         return postService.searchPosts(q, category);
     }
 

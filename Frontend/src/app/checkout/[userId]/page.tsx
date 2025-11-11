@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 interface CartItem {
     id: number;
@@ -131,7 +133,7 @@ export default function CheckoutPage() {
 
         // Check if cart is empty
         if (cartItems.length === 0) {
-            alert('Your cart is empty. Please add items before checking out.');
+            toast.error('Your cart is empty. Please add items before checking out.');
             return;
         }
 
@@ -181,7 +183,7 @@ export default function CheckoutPage() {
             console.log('Order created successfully:', order);
 
             // Show success message
-            alert(`Order placed successfully!\n\nOrder ID: ${order.id}\nTotal Amount: $${order.totalAmount.toFixed(2)}\n\nYou will receive a confirmation email shortly.`);
+            toast.success(`Order placed successfully!\n\nOrder ID: ${order.id}\nTotal Amount: $${order.totalAmount.toFixed(2)}\n\nYou will receive a confirmation email shortly.`);
 
             // Redirect to home or orders page
             router.push('/');
@@ -190,9 +192,9 @@ export default function CheckoutPage() {
             console.error('Checkout error:', error);
 
             if (error instanceof Error) {
-                alert(`Checkout Failed\n\n${error.message}`);
+                toast.error(`Checkout Failed\n\n${error.message}`);
             } else {
-                alert('An unexpected error occurred. Please try again or contact support.');
+                toast.error('An unexpected error occurred. Please try again or contact support.');
             }
         } finally {
             setLoading(false);
@@ -210,7 +212,7 @@ export default function CheckoutPage() {
                     <p className="text-gray-600 mb-6">Add some items to your cart before checking out.</p>
                     <button
                         onClick={() => router.push('/')}
-                        className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
+                        className="bg-blue-600 text-white px-8 py-3 cursor-pointer rounded-lg hover:bg-blue-700 transition font-semibold"
                     >
                         Continue Shopping
                     </button>
@@ -221,6 +223,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 py-8 mt-15 text-gray-900">
+            <ToastContainer />
             <div className="container mx-auto px-4">
                 <h1 className="text-3xl font-bold mb-8 text-gray-800">Checkout</h1>
 

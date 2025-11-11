@@ -8,10 +8,10 @@ import SearchBox from "./SearchBox";
 import Link from "next/link";
 import Image from "next/image";
 
-const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN;
+const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN
 
 type Category = {
-    _id: string;
+    id: string;
     title: string;
 };
 

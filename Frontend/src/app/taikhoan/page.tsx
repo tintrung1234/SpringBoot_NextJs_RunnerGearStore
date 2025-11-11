@@ -11,6 +11,7 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { Eye, EyeOff } from 'lucide-react';
 import { ToastContainer } from 'react-toastify';
 import Cookies from 'js-cookie';
+import axiosInstance from './axiosConfig';
 
 interface User {
     email?: string;
@@ -54,17 +55,26 @@ export default function TaiKhoan() {
     useEffect(() => {
         const rawUser = Cookies.get('user');
         try {
-            const decodedUser = rawUser ? decodeURIComponent(rawUser) : null;
-            const userData = decodedUser ? JSON.parse(decodedUser) : null;
-            setUser(userData);
+            const parsedUser = rawUser ? JSON.parse(rawUser) : null;
+            setUser(parsedUser);
         } catch (err) {
-            console.error('Error decoding or parsing user cookie:', err);
-            setUser(null);
+            console.error("Error parsing user:", err);
         }
 
         const storedToken = Cookies.get('token');
+        console.log("Stored token:", storedToken);
+
+        // Kiểm tra token khi trang load
+        if (!storedToken || isTokenExpired(storedToken)) {
+            Cookies.remove('token');
+            Cookies.remove('user');
+            toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+            router.push('/login');
+            return;
+        }
+
         setToken(storedToken ?? null);
-    }, []);
+    }, [router]);
 
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -171,19 +181,6 @@ export default function TaiKhoan() {
         document.addEventListener('mousedown', handler);
         return () => document.removeEventListener('mousedown', handler);
     }, [showUpdateForm]);
-
-    axios.interceptors.request.use((config) => {
-        const t = Cookies.get('token');
-        if (!t || isTokenExpired(t)) {
-            Cookies.remove('token');
-            Cookies.remove('user');
-            toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
-            window.location.href = "/login";
-            throw new axios.Cancel("Token expired");
-        }
-        if (t) config.headers.Authorization = `Bearer ${t}`;
-        return config;
-    });
 
     const handleUpdateUser = async () => {
         if (!token || !user) return;

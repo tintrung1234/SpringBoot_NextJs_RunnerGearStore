@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@CrossOrigin(origins = { "${app.frontend.url}" })
 @RestController
 @RequestMapping("/api/assets")
 public class AssetController {
