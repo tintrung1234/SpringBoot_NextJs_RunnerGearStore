@@ -6,15 +6,15 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface PostType {
-    _id: string;
+    id: string;
     title: string;
     category: string;
-    imageUrl: string;
+    image_url: string;
     views: number;
     content: string;
     description: string;
     slug: string;
-    createdAt: Date
+    created_at: Date
 }
 
 export default function Admin_ShowAllPosts() {
@@ -39,7 +39,7 @@ export default function Admin_ShowAllPosts() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get(`${DOMAIN}/api/posts/`);
+                const response = await axios.get(`${DOMAIN}/api/posts`);
                 setPosts(response.data);
             } catch (error) {
                 console.error("Lỗi khi tải sản phẩm:", error);
@@ -114,15 +114,15 @@ export default function Admin_ShowAllPosts() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {currentPosts.map((post) => (
                     <div
-                        key={post._id}
+                        key={post.id}
                         className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition"
                         onContextMenu={(e) => handleRightClick(e, post)}
                     >
                         <div className='relative w-full h-40'>
-                            {post.imageUrl ? (
+                            {post.image_url ? (
                                 <Image
                                     fill
-                                    src={post.imageUrl}
+                                    src={post.image_url}
                                     alt={post.title}
                                     className="object-cover rounded"
                                 />

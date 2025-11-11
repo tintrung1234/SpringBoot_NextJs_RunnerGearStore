@@ -5,15 +5,15 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface ProductType {
-    _id: string;
-    imageUrl: string;
+    id: string;
+    image_slug: string;
     title: string;
     description: string;
     discount: number;
     price: number;
     views?: number;
     rating?: number;
-    URL?: number;
+    slug?: string;
 }
 
 export default function Admin_ShowAllProducts() {
@@ -38,7 +38,7 @@ export default function Admin_ShowAllProducts() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get(`${DOMAIN}/api/products/`);
+                const response = await axios.get(`${DOMAIN}/api/products`);
                 setProducts(response.data);
             } catch (error) {
                 console.error("Lỗi khi tải sản phẩm:", error);
@@ -66,7 +66,7 @@ export default function Admin_ShowAllProducts() {
     const handleEdit = () => {
         if (!contextMenu.product) return;
         router.push(
-            `/admin/Products/editProducts/${contextMenu.product._id}`
+            `/admin/Products/editProducts/${contextMenu.product.id}`
         );
     };
 
@@ -105,15 +105,15 @@ export default function Admin_ShowAllProducts() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {currentProducts.map((product) => (
                     <div
-                        key={product._id}
+                        key={product.id}
                         className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition"
                         onContextMenu={(e) => handleRightClick(e, product)}
                     >
                         <div className='relative w-full h-40'>
-                            {product.imageUrl ? (
+                            {product.image_slug ? (
                                 <Image
                                     fill
-                                    src={product.imageUrl}
+                                    src={product.image_slug}
                                     alt={product.title}
                                     className="object-cover rounded"
                                 />

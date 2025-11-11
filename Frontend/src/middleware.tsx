@@ -6,7 +6,6 @@ export function middleware(request: NextRequest) {
     const userCookie = request.cookies.get("user")?.value;
     const decodedUser = userCookie ? decodeURIComponent(userCookie) : null;
     const userData = decodedUser ? JSON.parse(decodedUser) : null;
-
     // console.log("user:" ,userData)
     // Nếu không có token hoặc user cookie => redirect login
     if (!token || !userData) {

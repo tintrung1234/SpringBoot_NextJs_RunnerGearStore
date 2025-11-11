@@ -8,7 +8,7 @@ import { useParams } from 'next/navigation';
 
 // Define interfaces
 interface PostType {
-    _id: string;
+    id: string;
     title: string;
     category: string;
     views: number;
@@ -170,7 +170,7 @@ export default function PostForm() {
                 >
                     <option value="">-- Chọn --</option>
                     {postsState.map((post) => (
-                        <option key={post._id} value={post.slug}>
+                        <option key={post.id} value={post.slug}>
                             {post.title}
                         </option>
                     ))}

@@ -19,20 +19,20 @@ const RichTextEditor = dynamic(() => import('@/app/admin/Admin_components/RichEd
 
 // Define interfaces
 interface PostType {
-    _id: string;
+    id: string;
     title: string;
     category: string;
     views: number;
-    imageUrl: string;
+    image_url: string;
     content: string;
     description: string;
-    createdAt: Date;
+    created_at: Date;
     slug: string;
 }
 
 interface AssetsType {
-    _id: string;
-    imageUrl: string;
+    id: string;
+    image_url: string;
 }
 
 interface FormData {
@@ -41,7 +41,7 @@ interface FormData {
     category: string;
     views: number | string;
     content: string;
-    imageUrl: string;
+    image_url: string;
     slug: string;
 }
 
@@ -57,7 +57,7 @@ interface RichTextEditorRef {
 }
 
 interface CategoryType {
-    _id: string;
+    id: string;
     title: string;
 }
 
@@ -79,7 +79,7 @@ export default function PostForm() {
         category: '',
         views: 0,
         content: '',
-        imageUrl: '',
+        image_url: '',
         slug: '',
     });
     const [postsState, setPostsState] = useState<PostType[]>([]);
@@ -111,7 +111,7 @@ export default function PostForm() {
             const slug = postSlug || selectedPostSlug;
             setFormTab('Edit');
             axios
-                .get<PostType>(`${DOMAIN}/api/posts/detail/${slug}`)
+                .get<PostType>(`${DOMAIN}/api/posts/${slug}`)
                 .then((res) => {
                     const p = res.data; // lấy thẳng từ res.data
                     if (!p) {
@@ -143,11 +143,11 @@ export default function PostForm() {
                         category: p.category || '',
                         views: p.views || 0,
                         content: sanitizedContent,
-                        imageUrl: p.imageUrl || '',
+                        image_url: p.image_url || '',
                         slug: p.slug || '',
                     });
 
-                    setPreview(p.imageUrl || DEFAULT_IMAGE);
+                    setPreview(p.image_url || DEFAULT_IMAGE);
                 })
                 .catch((err) => {
                     console.error('Fetch post failed:', err);
@@ -161,7 +161,7 @@ export default function PostForm() {
                 category: '',
                 views: 0,
                 content: '',
-                imageUrl: '',
+                image_url: '',
                 slug: '',
             });
             setPreview(DEFAULT_IMAGE);
@@ -240,10 +240,10 @@ export default function PostForm() {
                     views: selectedPost.views ?? 0,
                     category: selectedPost.category || '',
                     content: sanitizedContent,
-                    imageUrl: selectedPost.imageUrl || '',
+                    image_url: selectedPost.image_url || '',
                     slug: selectedPost.slug,
                 });
-                setPreview(selectedPost.imageUrl || DEFAULT_IMAGE);
+                setPreview(selectedPost.image_url || DEFAULT_IMAGE);
             }
         }
     }, [formTab, selectedPostSlug, postsState]);
@@ -257,9 +257,9 @@ export default function PostForm() {
             };
             reader.readAsDataURL(imageFile);
         } else {
-            setPreview(formData.imageUrl || DEFAULT_IMAGE);
+            setPreview(formData.image_url || DEFAULT_IMAGE);
         }
-    }, [imageFile, formData.imageUrl]);
+    }, [imageFile, formData.image_url]);
 
     const handleRightClick = (e: React.MouseEvent, product: AssetsType) => {
         e.preventDefault();
@@ -267,7 +267,7 @@ export default function PostForm() {
     };
 
     const handleInsertToEditor = () => {
-        const url = contextMenu.product?.imageUrl;
+        const url = contextMenu.product?.image_url;
         if (url && editorRef.current) {
             editorRef.current.insertImage(url);
             toast.success('Đã chèn ảnh vào nội dung!');
@@ -302,7 +302,7 @@ export default function PostForm() {
             const toastSlug = toast.loading(formTab === 'Edit' ? 'Đang cập nhật bài...' : 'Đang đăng bài...');
 
             if (formTab === 'Edit' && selectedPostSlug) {
-                await axios.put(`${DOMAIN}/api/posts/update/${selectedPostSlug}`, data, {
+                await axios.put(`${DOMAIN}/api/posts/${selectedPostSlug}`, data, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -310,7 +310,7 @@ export default function PostForm() {
                 toast.dismiss(toastSlug);
                 toast.success('Cập nhật bài viết thành công!');
             } else {
-                await axios.post(`${DOMAIN}/api/posts/create`, data, {
+                await axios.post(`${DOMAIN}/api/posts`, data, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -326,7 +326,7 @@ export default function PostForm() {
                 views: 0,
                 content: '',
                 category: '',
-                imageUrl: '',
+                image_url: '',
                 slug: '',
             });
             setImageFile(null);
@@ -348,7 +348,7 @@ export default function PostForm() {
 
         try {
             const toastSlug = toast.loading('Đang xoá bài...');
-            await axios.delete(`${DOMAIN}/api/posts/delete/${selectedPostSlug}`);
+            await axios.delete(`${DOMAIN}/api/posts/${selectedPostSlug}`);
             toast.dismiss(toastSlug);
             toast.success('Xoá bài viết thành công!');
 
@@ -361,7 +361,7 @@ export default function PostForm() {
                 views: 0,
                 content: '',
                 category: '',
-                imageUrl: '',
+                image_url: '',
                 slug: '',
             });
             setImageFile(null);
@@ -407,7 +407,7 @@ export default function PostForm() {
                             views: "",
                             content: "",
                             category: "",
-                            imageUrl: "",
+                            image_url: "",
                             slug: "",
                         });
                     }}
@@ -437,7 +437,7 @@ export default function PostForm() {
                         >
                             <option value="">-- Chọn --</option>
                             {postsState.map((post) => (
-                                <option key={post._id} value={post.slug}>
+                                <option key={post.id} value={post.slug}>
                                     {post.title}
                                 </option>
                             ))}
@@ -511,14 +511,14 @@ export default function PostForm() {
                                     {
                                         assets.map((assets) => (
                                             <div
-                                                key={assets._id}
+                                                key={assets.id}
                                                 onContextMenu={(e) => handleRightClick(e, assets)}
                                                 className="xl:w-[calc(90vw/3-1rem)] lg:w-[calc(90vw/3-1rem)] md:w-[calc(90vw/2-1rem)] sm:w-[calc(90vw-1rem)] flex-shrink-0 border border-gray-300 p-2 hover:shadow-lg transition-shadow duration-300"
                                             >
                                                 <div className='w-full h-48 relative '>
                                                     <Image
                                                         fill
-                                                        src={assets.imageUrl}
+                                                        src={assets.image_url}
                                                         className="object-cover"
                                                         alt="Assets"
                                                     />
@@ -562,7 +562,7 @@ export default function PostForm() {
                             >
                                 <option value="">-- Chọn --</option>
                                 {categories.map(cat => (
-                                    <option value={cat.title} key={cat._id}>{cat.title}</option>
+                                    <option value={cat.title} key={cat.id}>{cat.title}</option>
                                 ))}
                             </select>
                         </div>
