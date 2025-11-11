@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = { "${app.frontend.url}" })
 @RestController
 @RequestMapping("/api/information")
-@CrossOrigin(origins = "*")
 public class InformationController {
 
     @Autowired

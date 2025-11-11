@@ -15,14 +15,14 @@ public class Information {
     private String email;
 
     @Column(nullable = false)
-    private String phoneNumber;
+    private String phone_number;
 
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.created_at = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -42,18 +42,18 @@ public class Information {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phone_number;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(String phone_number) {
+        this.phone_number = phone_number;
     }
 
     public LocalDateTime getCreatedAt() {
-        return createdAt;
+        return created_at;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(LocalDateTime created_at) {
+        this.created_at = created_at;
     }
 }

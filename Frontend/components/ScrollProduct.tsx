@@ -10,7 +10,8 @@ type Category = {
 };
 
 interface Product {
-    _id: string;
+    id: string;
+    slug: string;
     title: string;
     description: string;
     price: number | string;
@@ -29,6 +30,8 @@ export default function ScrollProduct({
     categories = [], // fallback mảng rỗng
     productsByCategory = {}, // fallback object rỗng
 }: ScrollProductProps) {
+
+    const DOMAIN = process.env.NEXT_PUBLIC_URLWEBSITE
 
     const scrollRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -51,7 +54,6 @@ export default function ScrollProduct({
         return <p className="text-center text-gray-500">Không có sản phẩm để hiển thị</p>;
     }
 
-    console.log(productsByCategory)
     return (
         <>
             {categories.map((category, idx) => {
@@ -97,9 +99,9 @@ export default function ScrollProduct({
                                 {(productsByCategory[category.title] || []).map((product) => {
                                     return (
                                         <div
-                                            key={product._id}
+                                            key={product.id}
                                             className="xl:w-[calc(90vw/5-1rem)] lg:w-[calc(90vw/5-1rem)] md:w-[calc(90vw/4-1rem)] sm:w-[calc(90vw-1rem)] flex-shrink-0 border border-gray-300 outline w-full sm:w-[calc(97vw/2-2rem)] justify-between rounded-[25px] cursor-pointer p-3"
-                                            onClick={() => window.open(product.URL, "_blank")}
+                                            onClick={() => window.open(`${DOMAIN}/productDetail/${product.slug}`, '_blank')}
                                         >
 
                                             <div className="overflow-hidden rounded-[25px]">
@@ -120,7 +122,7 @@ export default function ScrollProduct({
                                             </div>
 
                                             <ToggleFavorite
-                                                productId={product._id}
+                                                productId={product.id}
                                                 productTitle={product.title} />
                                             <div className="font-bold flex text-sm sm:text-base mt-1">
                                                 <p className="mr-2 text-black">Giá tiền:</p>

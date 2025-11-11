@@ -4,7 +4,7 @@ public class CheckoutRequest {
     private String fullName;
     private String email;
     private String phone;
-    private String shippingAddress;
+    private String shipping_address;
 
     public CheckoutRequest() {
     }
@@ -34,11 +34,10 @@ public class CheckoutRequest {
     }
 
     public String getShippingAddress() {
-        return shippingAddress;
+        return shipping_address;
     }
 
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
+    public void setShippingAddress(String shipping_address) {
+        this.shipping_address = shipping_address;
     }
 }
-

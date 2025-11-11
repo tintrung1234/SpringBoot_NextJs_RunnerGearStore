@@ -12,33 +12,50 @@ public class Banner {
     private Long id;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String image_url;
 
     @Column(name = "image_public_id")
-    private String imagePublicId;
+    private String image_public_id;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
     public Banner() {
-        this.createdAt = LocalDateTime.now();
+        this.created_at = LocalDateTime.now();
     }
 
-    public Banner(String imageUrl, String imagePublicId) {
-        this.imageUrl = imageUrl;
-        this.imagePublicId = imagePublicId;
-        this.createdAt = LocalDateTime.now();
+    public Banner(String image_url, String image_public_id) {
+        this.image_url = image_url;
+        this.image_public_id = image_public_id;
+        this.created_at = LocalDateTime.now();
     }
 
     // Getters và Setters
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getimage_url() {
+        return image_url;
+    }
 
-    public String getImagePublicId() { return imagePublicId; }
-    public void setImagePublicId(String imagePublicId) { this.imagePublicId = imagePublicId; }
+    public void setimage_url(String image_url) {
+        this.image_url = image_url;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getimage_public_id() {
+        return image_public_id;
+    }
+
+    public void setimage_public_id(String image_public_id) {
+        this.image_public_id = image_public_id;
+    }
+
+    public LocalDateTime getcreated_at() {
+        return created_at;
+    }
+
+    public void setcreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
+    }
 }

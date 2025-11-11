@@ -1,5 +1,6 @@
 package com.example.spring_postgres_blog.service;
 
+import com.example.spring_postgres_blog.dto.UserDTO;
 import com.example.spring_postgres_blog.model.User;
 import com.example.spring_postgres_blog.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,21 +15,32 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public User register (User user) {
+    public User register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("User"); // Set default role
         return userRepository.save(user);
     }
 
-    public Optional<User> login(String email, String password){
+    public Optional<User> login(String email, String password) {
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if(userOpt.isPresent() && passwordEncoder.matches(password, userOpt.get().getPassword())){
+        if (userOpt.isPresent() && passwordEncoder.matches(password, userOpt.get().getPassword())) {
             return userOpt;
         }
         return Optional.empty();
+    }
+
+    // Convert User to UserDTO (không trả password)
+    public UserDTO convertToDTO(User user) {
+        return new UserDTO(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getRole(),
+                user.getFavoritesPost());
     }
 
     public List<User> getAllUser() {
@@ -52,7 +64,7 @@ public class UserService {
 
         List<String> posts = new ArrayList<>(List.of(user.getFavoritesPost()));
 
-        if(posts.contains(postId)){
+        if (posts.contains(postId)) {
             posts.remove(postId);
         } else {
             posts.add(postId);

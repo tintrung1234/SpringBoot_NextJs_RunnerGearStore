@@ -6,7 +6,8 @@ import ToggleFavorite from '../../components/toggleFavoriteProduct';
 import ScrollProduct from '../../components/ScrollProduct';
 
 interface Product {
-    _id: string;
+    id: string;
+    slug: string;
     title: string;
     description: string;
     price: number | string;
@@ -17,12 +18,12 @@ interface Product {
 }
 
 interface Category {
-    _id: string;
+    id: string;
     title: string;
 }
 
 interface User {
-    _id: string;
+    id: string;
     username: string;
     favoritesProduct: string[];
 }
@@ -32,7 +33,7 @@ export default async function Home() {
 
     const cookieStore = await cookies();
 
-     const token = cookieStore.get('token')?.value;
+    const token = cookieStore.get('token')?.value;
     const rawUser = cookieStore.get('user')?.value;
 
     let user: User | null = null;
@@ -110,10 +111,10 @@ export default async function Home() {
 
                 <div className="flex flex-wrap px-5 mb-10 mt-3 justify-center gap-4" data-aos="fade-up">
                     {/* product */}
-                    {top2Products.map((product) => {
-                        return (
+                    {Array.isArray(top2Products) && top2Products.length > 0 ? (
+                        top2Products.map((product) => (
                             <div
-                                key={product._id}
+                                key={product.id}
                                 className="
           relative border border-black rounded-[25px] cursor-pointer 
           w-full sm:w-[calc(50%-1rem)] lg:w-[calc(50%-1rem)]
@@ -149,7 +150,7 @@ export default async function Home() {
                                 </div>
 
                                 <div className="px-4">
-                                    <ToggleFavorite productId={product._id} productTitle={product.title} />
+                                    <ToggleFavorite productId={product.id} productTitle={product.title} />
                                 </div>
 
                                 <div className="font-bold flex sm:flex-row flex-col text-sm sm:text-base mt-1 px-4 mb-3">
@@ -162,8 +163,11 @@ export default async function Home() {
                                     </p>
                                 </div>
                             </div>
-                        );
-                    })}
+                        )
+                        )
+                    ) : (
+                        <p className="text-gray-500 text-center w-full">No products available</p>
+                    )}
                 </div>
             </div>
         </div>

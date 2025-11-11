@@ -36,7 +36,7 @@ export async function generateMetadata({
   const { slug } = await params; // Await the params Promise to get the id
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOSTDOMAIN}/api/posts/detail/${slug}`,
+    `${DOMAIN}/api/posts/${slug}`,
     {
       cache: "no-store",
     }
@@ -86,7 +86,7 @@ export default async function BlogDetail({ params }: PageProps) {
 
   //api get detail
   const postRes = await fetch(
-    `${DOMAIN}/api/posts/detail/${slug}`,
+    `${DOMAIN}/api/posts/${slug}`,
     {
       cache: "no-store",
     }

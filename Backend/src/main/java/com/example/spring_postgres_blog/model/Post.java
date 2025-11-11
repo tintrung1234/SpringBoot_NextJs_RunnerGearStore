@@ -1,4 +1,5 @@
 package com.example.spring_postgres_blog.model;
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.Type;
 
@@ -27,16 +28,16 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostView> viewsPerDay = new ArrayList<>();
 
-    private String imageUrl;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private String image_url;
+    private LocalDateTime created_at = LocalDateTime.now();
     private String slug;
-    private String imagePublicId;
+    private String image_public_id;
 
     // SEO fields
-    private String metaTitle;
-    private String metaDescription;
-    private String metaKeywords;
-    private String metaURL;
+    private String meta_title;
+    private String meta_description;
+    private String meta_keywords;
+    private String meta_url;
 
     // Getters & Setters
 
@@ -84,7 +85,10 @@ public class Post {
         this.views = views;
     }
 
-    public List<PostView> getViewsPerDay() { return viewsPerDay; }
+    public List<PostView> getViewsPerDay() {
+        return viewsPerDay;
+    }
+
     public void setViewsPerDay(List<PostView> viewsPerDay) {
         this.viewsPerDay = viewsPerDay;
         for (PostView view : viewsPerDay) {
@@ -101,19 +105,19 @@ public class Post {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return image_url;
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+        this.image_url = imageUrl;
     }
 
     public LocalDateTime getCreatedAt() {
-        return createdAt;
+        return created_at;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+        this.created_at = createdAt;
     }
 
     public String getSlug() {
@@ -125,42 +129,42 @@ public class Post {
     }
 
     public String getImagePublicId() {
-        return imagePublicId;
+        return image_public_id;
     }
 
     public void setImagePublicId(String imagePublicId) {
-        this.imagePublicId = imagePublicId;
+        this.image_public_id = imagePublicId;
     }
 
     public String getMetaTitle() {
-        return metaTitle;
+        return meta_title;
     }
 
     public void setMetaTitle(String metaTitle) {
-        this.metaTitle = metaTitle;
+        this.meta_title = metaTitle;
     }
 
     public String getMetaDescription() {
-        return metaDescription;
+        return meta_description;
     }
 
     public void setMetaDescription(String metaDescription) {
-        this.metaDescription = metaDescription;
+        this.meta_description = metaDescription;
     }
 
     public String getMetaKeywords() {
-        return metaKeywords;
+        return meta_keywords;
     }
 
     public void setMetaKeywords(String metaKeywords) {
-        this.metaKeywords = metaKeywords;
+        this.meta_keywords = metaKeywords;
     }
 
     public String getMetaURL() {
-        return metaURL;
+        return meta_url;
     }
 
     public void setMetaURL(String metaURL) {
-        this.metaURL = metaURL;
+        this.meta_url = metaURL;
     }
 }

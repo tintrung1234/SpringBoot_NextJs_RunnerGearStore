@@ -24,9 +24,9 @@ public class Order {
     private String fullName;
     private String email;
     private String phone;
-    private Double totalAmount;
+    private Double total_amount;
     private String status;
-    private String shippingAddress;
+    private String shipping_address;
     private LocalDateTime createdAt = LocalDateTime.now();
 
     // Helper method to add single item
@@ -77,11 +77,11 @@ public class Order {
     }
 
     public String getShippingAddress() {
-        return shippingAddress;
+        return shipping_address;
     }
 
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
+    public void setShippingAddress(String shipping_address) {
+        this.shipping_address = shipping_address;
     }
 
     public String getPhone() {
@@ -101,11 +101,11 @@ public class Order {
     }
 
     public Double getTotalAmount() {
-        return totalAmount;
+        return total_amount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setTotalAmount(Double total_amount) {
+        this.total_amount = total_amount;
     }
 
     public String getStatus() {
