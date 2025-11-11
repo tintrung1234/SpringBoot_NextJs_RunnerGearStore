@@ -99,11 +99,6 @@ export default function Login() {
             Cookies.set("token", token, { expires: 1 });
             Cookies.set("user", JSON.stringify(user), { expires: 1 });
 
-            // Debug: Kiểm tra xem đã lưu chưa
-            console.log("Token saved:", Cookies.get("token"));
-            console.log("User saved:", Cookies.get("user"));
-            console.log("All cookies:", document.cookie);
-
             toast.dismiss(toastId);
             toast.success("Đăng nhập thành công!");
 

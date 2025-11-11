@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 interface CategoryType {
-    _id: string;
+    id: string;
     title: string;
 }
 
@@ -59,7 +59,7 @@ export default function Admin_ShowAllCategories() {
     const handleEdit = () => {
         if (!contextMenu.category) return;
         router.push(
-            `/admin/Categories/editCategory/${contextMenu.category._id}`
+            `/admin/Categories/editCategory/${contextMenu.category.id}`
         );
     };
 
@@ -85,7 +85,7 @@ export default function Admin_ShowAllCategories() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {currentCategories.map((category) => (
                     <div
-                        key={category._id}
+                        key={category.id}
                         className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition"
                         onContextMenu={(e) => handleRightClick(e, category)}
                     >
