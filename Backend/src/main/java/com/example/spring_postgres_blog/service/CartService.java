@@ -4,15 +4,11 @@ import com.example.spring_postgres_blog.controller.CartController;
 import com.example.spring_postgres_blog.model.*;
 import com.example.spring_postgres_blog.repository.*;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +29,29 @@ public class CartService {
 
     @Transactional
     public void addToCart(Long userId, Long productId, int quantity) {
-        User user = userRepo.findById(userId).orElseThrow();
-        Product product = productRepo.findById(productId).orElseThrow();
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        CartItem item = new CartItem();
-        item.setUser(user);
-        item.setProduct(product);
-        item.setQuantity(quantity);
+        // Check if item already exists in cart
+        Optional<CartItem> existingItem = cartRepo.findByUserIdAndProductId(userId, productId);
 
-        cartRepo.save(item);
+        if (existingItem.isPresent()) {
+            // Update quantity if item already exists
+            CartItem item = existingItem.get();
+            item.setQuantity(item.getQuantity() + quantity);
+            cartRepo.save(item);
+            logger.info("Updated existing cart item quantity");
+        } else {
+            // Create new cart item
+            CartItem item = new CartItem();
+            item.setUser(user);
+            item.setProduct(product);
+            item.setQuantity(quantity);
+            cartRepo.save(item);
+            logger.info("Created new cart item");
+        }
     }
 
     public List<CartItem> getCartItemsByUserId(Long userId) {
