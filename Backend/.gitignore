@@ -37,4 +37,4 @@ out/
 .vscode/
 .fake
 
-.resources/
+src/main/resources/application.properties
