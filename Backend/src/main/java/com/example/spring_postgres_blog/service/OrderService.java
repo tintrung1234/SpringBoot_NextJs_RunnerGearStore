@@ -79,4 +79,24 @@ public class OrderService {
         List<Order> orders = orderRepo.findByUserId(userId);
         return orders;
     }
+
+    public Order getOrderById(Long orderId) {
+        return orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+
+    public Order updateOrderStatus(Long orderId, String status) {
+        Order order = getOrderById(orderId);
+        order.setStatus(status);
+        return orderRepo.save(order);
+    }
+
+    public void cancelOrder(Long orderId) {
+        Order order = getOrderById(orderId);
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new RuntimeException("Cannot cancel order with status: " + order.getStatus());
+        }
+        order.setStatus("CANCELLED");
+        orderRepo.save(order);
+    }
 }

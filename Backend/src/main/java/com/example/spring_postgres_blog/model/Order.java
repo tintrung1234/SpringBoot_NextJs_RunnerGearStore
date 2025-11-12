@@ -21,7 +21,7 @@ public class Order {
     @JsonManagedReference
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    private String fullName;
+    private String full_name;
     private String email;
     private String phone;
     private Double total_amount;
@@ -61,11 +61,11 @@ public class Order {
     }
 
     public String getFullName() {
-        return fullName;
+        return full_name;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFullName(String full_name) {
+        this.full_name = full_name;
     }
 
     public String getEmail() {

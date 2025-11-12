@@ -184,10 +184,6 @@ export default function CheckoutPage() {
 
             // Show success message
             toast.success(`Order placed successfully!\n\nOrder ID: ${order.id}\nTotal Amount: $${order.totalAmount.toFixed(2)}\n\nYou will receive a confirmation email shortly.`);
-
-            // Redirect to home or orders page
-            router.push('/');
-
         } catch (error) {
             console.error('Checkout error:', error);
 
