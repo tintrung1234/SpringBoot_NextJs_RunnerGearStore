@@ -9,7 +9,7 @@ const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN;
 const WEBDOMAIN = process.env.NEXT_PUBLIC_URLWEBSITE;
 
 interface PostType {
-  _id: string;
+  id: number;
   title: string;
   description: string;
   category: string;
@@ -91,6 +91,18 @@ export default async function BlogDetail({ params }: PageProps) {
       cache: "no-store",
     }
   );
+
+  if (!postRes.ok) {
+    return (
+      <div className="mt-22 px-5 lg:px-28">
+        <div className="text-center py-20">
+          <h1 className="text-2xl font-bold text-gray-800">Bài viết không tồn tại</h1>
+          <p className="text-gray-600 mt-2">Không tìm thấy bài viết với slug: {slug}</p>
+        </div>
+      </div>
+    );
+  }
+
   const post: PostType = await postRes.json();
 
 
@@ -111,7 +123,7 @@ export default async function BlogDetail({ params }: PageProps) {
                     <h1 className="text-gray-500 text-xs mr-1">
                       Lượt xem: {post.views || 0} |
                     </h1>
-                    <ToggleFavoritePostDetail postId={post._id} />
+                    <ToggleFavoritePostDetail postId={post.id} />
                   </div>
                 </div>
 

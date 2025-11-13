@@ -1,22 +1,27 @@
 package com.example.spring_postgres_blog.dto;
 
+import java.util.List;
+
 public class UserDTO {
     private Long id;
     private String email;
     private String username;
     private String role;
-    private String[] favoritesPost;
+    private List<String> favoritesPost;
+    private List<String> favoritesProduct;
 
     // Constructors
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String email, String username, String role, String[] favoritesPost) {
+    public UserDTO(Long id, String email, String username, String role, List<String> favoritesPost,
+            List<String> favoritesProduct) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.role = role;
         this.favoritesPost = favoritesPost;
+        this.favoritesProduct = favoritesProduct;
     }
 
     // Getters and Setters
@@ -52,11 +57,19 @@ public class UserDTO {
         this.role = role;
     }
 
-    public String[] getFavoritesPost() {
+    public List<String> getFavoritesPost() {
         return favoritesPost;
     }
 
-    public void setFavoritesPost(String[] favoritesPost) {
+    public void setFavoritesPost(List<String> favoritesPost) {
         this.favoritesPost = favoritesPost;
+    }
+
+    public List<String> getFavoritesProduct() {
+        return favoritesProduct;
+    }
+
+    public void setFavoritesProduct(List<String> favoritesProduct) {
+        this.favoritesProduct = favoritesProduct;
     }
 }

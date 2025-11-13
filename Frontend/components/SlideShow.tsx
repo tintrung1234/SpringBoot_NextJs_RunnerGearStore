@@ -53,7 +53,7 @@ export default function SlideShow() {
             key={index}
             src={banner.image_url}
             alt={`Slide ${index + 1}`}
-            className={`absolute top-0 left-0 w-full object-fit h-full rounded-[2vw] transition-opacity duration-500 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'
+            className={`absolute top-0 left-0 w-full object-cover h-full rounded-[2vw] transition-opacity duration-500 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'
               }`}
           />
         ))}

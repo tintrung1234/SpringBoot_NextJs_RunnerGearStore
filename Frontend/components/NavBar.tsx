@@ -2,11 +2,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import './NavBar.css';
 import UserIcon from '../public/assets/img/User.png';
+import CartIcon from '../public/assets/img/ic_cart_navbar.png';
 import ic_dropdown from '../public/assets/img/ic_dropdown.png';
 import axios from "axios";
 import SearchBox from "./SearchBox";
 import Link from "next/link";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 const DOMAIN = process.env.NEXT_PUBLIC_HOSTDOMAIN
 
@@ -20,6 +22,31 @@ export default function NavBar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [userId, setUserId] = useState<string | null>(null);
+
+    const [cartCount, setCartCount] = useState(0);
+
+    useEffect(() => {
+        // Get userId from cookies
+        const userIdFromCookie = Cookies.get('user');
+        setUserId(userIdFromCookie ? JSON.parse(userIdFromCookie).id : null);
+    }, []);
+
+    useEffect(() => {
+        const fetchCartCount = async () => {
+            if (!userId) return;
+
+            try {
+                const response = await axios.get(`${DOMAIN}/api/cart/${userId}`);
+                setCartCount(response.data.length);
+            } catch (error) {
+                console.error('Error fetching cart count:', error);
+            }
+        };
+
+        fetchCartCount();
+    }, []);
+
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -119,8 +146,19 @@ export default function NavBar() {
                         <a href="/DeXuat" className="btn text-xs sm:text-sm  text-white cursor-pointer">Đề xuất</a>
                         <a href="/blog" className="btn text-xs sm:text-sm  text-white cursor-pointer">Blog</a>
                         <a href="/taikhoan" className="btn text-xs sm:text-sm  text-white cursor-pointer flex items-center">
-                            <Image src={UserIcon} alt="userimage" className="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-1 sm:mr-2" />
+                            <Image src={UserIcon} alt="userimage" className="w-4 h-4 sm:w-5 sm:h-5 inline-block" />
                         </a>
+                        <Link
+                            href={userId ? `/cart/${userId}` : '/login'}
+                            className="btn text-xs sm:text-sm text-white cursor-pointer flex items-center relative"
+                        >
+                            <Image src={CartIcon} alt="carticon" className="w-5 h-5 sm:w-5 sm:h-5 inline-block mr-1 sm:mr-2" />
+                            {cartCount > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </Link>
                     </div>
                 </div>
             </nav>

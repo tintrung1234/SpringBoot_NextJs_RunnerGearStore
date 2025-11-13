@@ -1,17 +1,19 @@
 package com.example.spring_postgres_blog.service;
 
-import com.example.spring_postgres_blog.model.Post;
 import com.example.spring_postgres_blog.model.Product;
 import com.example.spring_postgres_blog.repository.ProductRepository;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.text.Normalizer;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -41,6 +43,16 @@ public class ProductService {
         }
     }
 
+    public List<Product> getProductsByIds(String ids) {
+        List<Long> productIds = Arrays.stream(ids.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        return productRepository.findAllById(productIds);
+    }
+
     private String toSlug(String input) {
         String nowhitespace = Pattern.compile("\\s").matcher(input).replaceAll("-");
         String normalized = Normalizer.normalize(nowhitespace, Normalizer.Form.NFD);
@@ -62,8 +74,8 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProduct(Long id, Product updatedProduct) {
-        return productRepository.findById(id).map(product -> {
+    public Product updateProduct(String slug, Product updatedProduct) {
+        return productRepository.findBySlug(slug).map(product -> {
             product.setTitle(updatedProduct.getTitle());
             product.setDescription(updatedProduct.getDescription());
             product.setCategory(updatedProduct.getCategory());
@@ -72,14 +84,25 @@ public class ProductService {
             product.setViews(updatedProduct.getViews());
             product.setRating(updatedProduct.getRating());
             product.setUrl(updatedProduct.getUrl());
-            product.setImageUrl(updatedProduct.getImageUrl());
-            product.setImagePublicId(updatedProduct.getImagePublicId());
+
+            // Only update image if new one is provided
+            if (updatedProduct.getImageUrl() != null && !updatedProduct.getImageUrl().isEmpty()) {
+                product.setImageUrl(updatedProduct.getImageUrl());
+                product.setImagePublicId(updatedProduct.getImagePublicId());
+            }
+
             return productRepository.save(product);
         }).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    public void deleteProductBySlug(String slug) {
+        productRepository.findBySlug(slug).ifPresent(product -> {
+            productRepository.delete(product);
+        });
     }
 
     public List<Product> getTop2DiscountProducts() {

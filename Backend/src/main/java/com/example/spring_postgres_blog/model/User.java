@@ -1,8 +1,11 @@
 package com.example.spring_postgres_blog.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -24,7 +27,10 @@ public class User {
     private String role = "User";
 
     @Column(name = "favorites_post", columnDefinition = "text[]")
-    private String[] favorites_post = new String[] {};
+    private List<String> favoritesPost = new ArrayList<>();
+
+    @Column(name = "favorites_product", columnDefinition = "text[]")
+    private List<String> favoritesProduct = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -66,11 +72,19 @@ public class User {
         this.username = username;
     }
 
-    public String[] getFavoritesPost() {
-        return favorites_post;
+    public List<String> getFavoritesPost() {
+        return favoritesPost;
     }
 
-    public void setFavoritesPost(String[] favorites_post) {
-        this.favorites_post = favorites_post;
+    public void setFavoritesPost(List<String> favoritesPost) {
+        this.favoritesPost = favoritesPost;
+    }
+
+    public List<String> getFavoritesProduct() {
+        return favoritesProduct;
+    }
+
+    public void setFavoritesProduct(List<String> favoritesProduct) {
+        this.favoritesProduct = favoritesProduct;
     }
 }

@@ -18,6 +18,10 @@ public class OrderService {
         this.cartRepo = cartRepo;
     }
 
+    public List<Order> getAllOrders() {
+        return orderRepo.findAllByOrderByCreatedAtDesc();
+    }
+
     @Transactional
     public Order createOrderFromCart(Long userId, String fullName, String email, String phone, String shippingAddress) {
         List<CartItem> items = cartRepo.findByUserId(userId);
@@ -78,5 +82,25 @@ public class OrderService {
     public List<Order> getOrdersByUserId(Long userId) {
         List<Order> orders = orderRepo.findByUserId(userId);
         return orders;
+    }
+
+    public Order getOrderById(Long orderId) {
+        return orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+
+    public Order updateOrderStatus(Long orderId, String status) {
+        Order order = getOrderById(orderId);
+        order.setStatus(status);
+        return orderRepo.save(order);
+    }
+
+    public void cancelOrder(Long orderId) {
+        Order order = getOrderById(orderId);
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new RuntimeException("Cannot cancel order with status: " + order.getStatus());
+        }
+        order.setStatus("CANCELLED");
+        orderRepo.save(order);
     }
 }

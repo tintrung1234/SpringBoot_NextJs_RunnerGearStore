@@ -58,12 +58,15 @@ export default function ProductForm() {
     }, [slugParams]);
 
     useEffect(() => {
-        const slug = slugParams || selectedProductslug;
-        if (slug) {
+        const slug = selectedProductslug || slugParams;
 
-            setIsEdit(true);
-            axios.get(`${DOMAIN}/api/products/detail/${slug}`).then((res) => {
+        if (!slug) return;
+
+        const fetchProductDetail = async () => {
+            try {
+                const res = await axios.get(`${DOMAIN}/api/products/detail/${slug}`);
                 const p = res.data;
+
                 if (!p) {
                     toast.error("Không tìm thấy sản phẩm");
                     return;
@@ -71,20 +74,24 @@ export default function ProductForm() {
 
                 setFormData({
                     title: p.title || "",
-                    price: p.price || "",
+                    price: p.price?.toString() || "",
                     description: p.description || "",
-                    discount: p.discount ?? "",
-                    views: p.views ?? "",
-                    rating: p.rating ?? "",
+                    discount: p.discount?.toString() || "",
+                    views: p.views?.toString() || "",
+                    rating: p.rating?.toString() || "",
                     category: p.category || "",
                     image_url: p.image_url || "",
                     slug: p.slug || "",
                 });
                 setPreview(p.image_url || "");
-            });
-        }
+            } catch (err) {
+                console.error("Lỗi khi tải chi tiết sản phẩm:", err);
+                toast.error("Không thể tải thông tin sản phẩm");
+            }
+        };
 
-    }, [DOMAIN, slugParams, selectedProductslug]);
+        fetchProductDetail();
+    }, [selectedProductslug, slugParams, DOMAIN]);
 
     useEffect(() => {
         // Luôn fetch toàn bộ product khi vào trang

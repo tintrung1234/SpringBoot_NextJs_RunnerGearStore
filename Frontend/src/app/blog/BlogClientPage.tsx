@@ -10,7 +10,7 @@ import Breadcrumb from '../../../components/BreadCrumb';
 import SearchBox from '../../../components/SearchBox';
 
 interface PostType {
-    _id: string;
+    id: string;
     title: string;
     category: string;
     imageUrl: string;
@@ -21,7 +21,7 @@ interface PostType {
 }
 
 interface Category {
-    _id: string;
+    id: string;
     title: string;
 }
 
@@ -103,7 +103,7 @@ export default function BlogClientPage(
                                 <div className="text-sm text-gray-600 mb-1 mt-2">
                                     {new Date(topPost.createdAt).toLocaleDateString("vi-VN")}
                                 </div>
-                                <ToggleFavoritePost postId={topPost._id} postTitle={topPost.title} />
+                                <ToggleFavoritePost postId={topPost.id} postTitle={topPost.title} slug={topPost.slug} />
                                 <div
                                     className="text-gray-600 mb-4 prose max-w-none"
                                     dangerouslySetInnerHTML={{ __html: topPost.description }}
@@ -130,7 +130,7 @@ export default function BlogClientPage(
 
                         {posts.map((post) => (
                             <div
-                                key={post._id}
+                                key={post.id}
                                 className="px-3 py-5 mb-3 cursor-pointer hover:bg-yellow-50"
                                 onClick={() => {
                                     handleDetailClick(post.slug);
@@ -184,7 +184,7 @@ export default function BlogClientPage(
                             <div className="flex w-fit lg:space-x-4 md:space-x-3 sm:space-x-2">
                                 {(postsByCategory[category.title] || []).map((post) => (
                                     <div
-                                        key={post._id}
+                                        key={post.id}
                                         className="xl:w-[calc(90vw/3-1rem)] lg:w-[calc(90vw/3-1rem)] md:w-[calc(90vw/2-1rem)] w-[60vw] flex-shrink-0 border border-gray-300 p-2 hover:shadow-lg transition-shadow duration-300"
                                     >
                                         <div className="overflow-hidden">
@@ -203,7 +203,7 @@ export default function BlogClientPage(
                                             </div>
                                             }
                                         </div>
-                                        <ToggleFavoritePost postId={post._id} postTitle={post.title} />
+                                        <ToggleFavoritePost postId={post.id} postTitle={post.title} slug={post.slug} />
                                         <div
                                             className="text-gray-600 text-sm mt-2  line-clamp-2 text-muted"
                                             dangerouslySetInnerHTML={{ __html: post.description }}

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -17,7 +18,7 @@ public class AssetService {
     private AssetRepository assetRepository;
 
     @Autowired
-    private Cloudinary cloudinary;
+    private CloudinaryService cloudinaryService;
 
     public List<Asset> getAllAssets() {
         return assetRepository.findAll()
@@ -31,10 +32,10 @@ public class AssetService {
         String image_public_id = "";
 
         if (file != null && !file.isEmpty()) {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
-                    ObjectUtils.asMap("folder", "assets"));
-            image_url = uploadResult.get(uploadResult.get("secure_url")).toString();
-            image_public_id = uploadResult.get("public_id").toString();
+            // Use CloudinaryService for upload
+            Map uploadResult = cloudinaryService.uploadWithOptions(file, "assets", 1200, 1200);
+            image_url = (String) uploadResult.get("secure_url");
+            image_public_id = (String) uploadResult.get("public_id");
         }
 
         Asset asset = new Asset(image_url, image_public_id);
@@ -45,6 +46,15 @@ public class AssetService {
         Optional<Asset> asset = assetRepository.findById(id);
         if (asset.isEmpty())
             return false;
+
+        // Delete from Cloudinary if public_id exists
+        if (asset.get().getImagePublicId() != null && !asset.get().getImagePublicId().isEmpty()) {
+            try {
+                cloudinaryService.delete(asset.get().getImagePublicId());
+            } catch (IOException e) {
+                System.err.println("Error deleting image from Cloudinary: " + e.getMessage());
+            }
+        }
 
         assetRepository.deleteById(id);
         return true;
