@@ -9,13 +9,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.example.spring_postgres_blog.model.PostView;
+import com.example.spring_postgres_blog.model.Product;
 import com.example.spring_postgres_blog.repository.PostViewRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Transactional
@@ -48,6 +48,16 @@ public class PostService {
         } else {
             return postRepository.findAll();
         }
+    }
+
+    public List<Post> getPostByIds(String ids) {
+        List<Long> postIds = Arrays.stream(ids.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        return postRepository.findAllById(postIds);
     }
 
     public List<Post> getPostsByCategory(String category) {

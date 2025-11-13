@@ -2,6 +2,9 @@ package com.example.spring_postgres_blog.service;
 
 import com.example.spring_postgres_blog.model.Product;
 import com.example.spring_postgres_blog.repository.ProductRepository;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -37,6 +41,16 @@ public class ProductService {
         } else {
             return productRepository.findAll();
         }
+    }
+
+    public List<Product> getProductsByIds(String ids) {
+        List<Long> productIds = Arrays.stream(ids.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        return productRepository.findAllById(productIds);
     }
 
     private String toSlug(String input) {

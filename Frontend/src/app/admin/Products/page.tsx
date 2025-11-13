@@ -66,7 +66,7 @@ export default function Admin_ShowAllProducts() {
     const handleEdit = () => {
         if (!contextMenu.product) return;
         router.push(
-            `/admin/Products/editProducts/${contextMenu.product.id}`
+            `/admin/Products/editProducts/${contextMenu.product.slug}`
         );
     };
 

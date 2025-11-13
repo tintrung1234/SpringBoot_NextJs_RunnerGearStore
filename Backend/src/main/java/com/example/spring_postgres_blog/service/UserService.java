@@ -3,6 +3,9 @@ package com.example.spring_postgres_blog.service;
 import com.example.spring_postgres_blog.dto.UserDTO;
 import com.example.spring_postgres_blog.model.User;
 import com.example.spring_postgres_blog.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +43,8 @@ public class UserService {
                 user.getEmail(),
                 user.getUsername(),
                 user.getRole(),
-                user.getFavoritesPost());
+                user.getFavoritesPost(),
+                user.getFavoritesProduct());
     }
 
     public List<User> getAllUser() {
@@ -59,18 +63,43 @@ public class UserService {
         });
     }
 
+    @Transactional
     public User toggleFavoritePost(Long userId, String postId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<String> posts = new ArrayList<>(List.of(user.getFavoritesPost()));
-
-        if (posts.contains(postId)) {
-            posts.remove(postId);
+        List<String> favorites = user.getFavoritesPost();
+        if (favorites == null) {
+            favorites = new ArrayList<>();
+        }
+        System.out.println("Current favorites: " + favorites);
+        if (favorites.contains(postId)) {
+            favorites.remove(postId);
         } else {
-            posts.add(postId);
+            favorites.add(postId);
         }
 
-        user.setFavoritesPost(posts.toArray(new String[0]));
+        user.setFavoritesPost(favorites);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User toggleFavoriteProduct(Long userId, String productId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<String> favorites = user.getFavoritesProduct();
+        if (favorites == null) {
+            favorites = new ArrayList<>();
+        }
+
+        if (favorites.contains(productId)) {
+            favorites.remove(productId);
+        } else {
+            favorites.add(productId);
+        }
+
+        user.setFavoritesProduct(favorites);
         return userRepository.save(user);
     }
 }

@@ -17,6 +17,12 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Order>> getAllOrders() {
+        List<Order> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
+
     @PostMapping("/checkout/{userId}")
     public ResponseEntity<Order> checkout(
             @PathVariable Long userId,

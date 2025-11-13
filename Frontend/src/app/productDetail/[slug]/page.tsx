@@ -7,7 +7,7 @@ import axios, { AxiosError } from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
-import { Star, ShoppingCart, Share2, TrendingUp, Package, Shield, Truck } from 'lucide-react';
+import { Star, ShoppingCart, ArrowLeftFromLine, TrendingUp, Package, Shield, Truck } from 'lucide-react';
 import ToggleFavorite from '../../../../components/toggleFavoriteProduct';
 import Link from 'next/link';
 
@@ -128,8 +128,19 @@ export default function ProductDetailPage() {
     const discountedPrice = calculateDiscountedPrice(product.price, product.discount);
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <ToastContainer />
+        <div className="min-h-screen bg-gray-50 py-8 text-black">
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                limit={3}
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb */}
                 <nav className="mb-6 text-sm">
@@ -219,7 +230,7 @@ export default function ProductDetailPage() {
                                     <button
                                         key={size}
                                         onClick={() => setSelectedSize(size)}
-                                        className={`py-3 px-4 border-2 cursor-pointer rounded-lg font-medium transition-all ${selectedSize === size
+                                        className={`cursor-pointer py-3 px-4 border-2 rounded-lg font-medium transition-all ${selectedSize === size
                                             ? 'border-blue-600 bg-blue-50 text-blue-600'
                                             : 'border-gray-200 hover:border-gray-300 text-gray-700'
                                             }`}
@@ -255,7 +266,7 @@ export default function ProductDetailPage() {
                             <button
                                 onClick={handleAddToCart}
                                 disabled={addingToCart}
-                                className={`w-full py-4 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2 ${addingToCart
+                                className={`cursor-pointer w-full py-4 rounded-xl font-semibold transition-colors flex items-center justify-center space-x-2 ${addingToCart
                                     ? 'bg-gray-400 cursor-not-allowed'
                                     : 'bg-blue-600 hover:bg-blue-700'
                                     } text-white`}
@@ -263,9 +274,10 @@ export default function ProductDetailPage() {
                                 <ShoppingCart className="w-5 h-5" />
                                 <span>{addingToCart ? 'Đang thêm...' : 'Thêm vào giỏ hàng'}</span>
                             </button>
-                            <button className="w-full border-2 border-gray-300 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
-                                <Share2 className="w-5 h-5" />
-                                <span>Chia sẻ</span>
+                            <button className="cursor-pointer w-full border-2 border-gray-300 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                                onClick={() => router.back()}>
+                                <ArrowLeftFromLine className="w-5 h-5" />
+                                <span>Xem sản phẩm khác</span>
                             </button>
                         </div>
 

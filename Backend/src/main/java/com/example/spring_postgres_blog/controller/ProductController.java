@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = { "${app.frontend.url}" })
 @RestController
@@ -32,6 +33,16 @@ public class ProductController {
     public List<Product> searchProduct(@RequestParam(required = false) String q,
             @RequestParam(required = false) String category) {
         return productService.searchProduct(q, category);
+    }
+
+    @GetMapping("/by-ids")
+    public ResponseEntity<List<Product>> getProductsByIds(@RequestParam String ids) {
+        try {
+            List<Product> products = productService.getProductsByIds(ids);
+            return ResponseEntity.ok(products);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/category/{category}")

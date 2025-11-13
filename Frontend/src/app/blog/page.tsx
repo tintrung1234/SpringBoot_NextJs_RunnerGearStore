@@ -2,7 +2,7 @@
 import BlogClientPage from "./BlogClientPage";
 
 interface PostType {
-    _id: string;
+    id: string;
     title: string;
     category: string;
     imageUrl: string;
@@ -13,7 +13,7 @@ interface PostType {
 }
 
 interface Category {
-    _id: string;
+    id: string;
     title: string;
 }
 
