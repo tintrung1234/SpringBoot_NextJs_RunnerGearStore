@@ -10,11 +10,13 @@ import { IoIosLogOut, IoMdInformationCircleOutline } from "react-icons/io";
 import { AiOutlinePicture } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaImages } from "react-icons/fa6";
+import { IoBagCheckOutline } from "react-icons/io5";
 import clsx from 'clsx';
 import Cookies from 'js-cookie';
 
 const navItems = [
     { path: '/admin', label: 'Dashboard', icon: <MdOutlineDashboard /> },
+    { path: '/admin/orders', label: 'Orders', icon: <IoBagCheckOutline /> },
     { path: '/admin/user', label: 'User', icon: <FaUserEdit /> },
     { path: '/admin/banner', label: 'Banner', icon: <AiOutlinePicture /> },
     { path: '/admin/information', label: 'Information', icon: <IoMdInformationCircleOutline /> },

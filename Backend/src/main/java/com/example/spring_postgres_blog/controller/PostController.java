@@ -1,6 +1,7 @@
 package com.example.spring_postgres_blog.controller;
 
 import com.example.spring_postgres_blog.model.Post;
+import com.example.spring_postgres_blog.model.Product;
 import com.example.spring_postgres_blog.service.PostService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,16 @@ public class PostController {
         return postService.getPostBySlug(slug)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/by-ids")
+    public ResponseEntity<List<Post>> getPostsByIds(@RequestParam String ids) {
+        try {
+            List<Post> posts = postService.getPostByIds(ids);
+            return ResponseEntity.ok(posts);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/newest")

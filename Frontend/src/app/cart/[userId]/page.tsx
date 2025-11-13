@@ -143,7 +143,7 @@ export default function CartPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 mt-15 text-gray-800">
+        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 mt-15 text-gray-800 text-black">
             <ToastContainer />
 
             <div className="max-w-7xl mx-auto">
@@ -165,7 +165,7 @@ export default function CartPage() {
                                 <div key={item.id} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
                                     <div className="flex flex-col sm:flex-row gap-4">
                                         {/* Product Image */}
-                                        <Link href={`/sanpham/${item.product.slug}`} className="relative w-full sm:w-32 h-32 flex-shrink-0">
+                                        <Link href={`/productDetail/${item.product.slug}`} className="relative w-full sm:w-32 h-32 flex-shrink-0">
                                             <Image
                                                 src={item.product.image_url || '/placeholder.png'}
                                                 alt={item.product.title}
@@ -182,7 +182,7 @@ export default function CartPage() {
                                         {/* Product Info */}
                                         <div className="flex-1 flex flex-col justify-between">
                                             <div>
-                                                <Link href={`/sanpham/${item.product.slug}`}>
+                                                <Link href={`/productDetail/${item.product.slug}`}>
                                                     <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 line-clamp-2">
                                                         {item.product.title}
                                                     </h3>
@@ -212,14 +212,14 @@ export default function CartPage() {
                                                     <button
                                                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                         disabled={item.quantity <= 1}
-                                                        className="px-3 py-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="cursor-pointer px-3 py-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                                     >
                                                         <FaMinus className="text-sm" />
                                                     </button>
                                                     <span className="px-4 py-2 font-semibold">{item.quantity}</span>
                                                     <button
                                                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                        className="px-3 py-2 hover:bg-gray-100"
+                                                        className="cursor-pointer px-3 py-2 hover:bg-gray-100"
                                                     >
                                                         <FaPlus className="text-sm" />
                                                     </button>
@@ -227,7 +227,7 @@ export default function CartPage() {
 
                                                 <button
                                                     onClick={() => removeItem(item.id)}
-                                                    className="text-red-600 hover:text-red-800 flex items-center gap-2"
+                                                    className="cursor-pointer text-red-600 hover:text-red-800 flex items-center gap-2"
                                                 >
                                                     <FaTrash />
                                                     <span className="hidden sm:inline">Xóa</span>

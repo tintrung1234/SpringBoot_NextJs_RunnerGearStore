@@ -18,6 +18,10 @@ public class OrderService {
         this.cartRepo = cartRepo;
     }
 
+    public List<Order> getAllOrders() {
+        return orderRepo.findAllByOrderByCreatedAtDesc();
+    }
+
     @Transactional
     public Order createOrderFromCart(Long userId, String fullName, String email, String phone, String shippingAddress) {
         List<CartItem> items = cartRepo.findByUserId(userId);

@@ -88,11 +88,46 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @PutMapping("{userId}/toggle-post")
-    public ResponseEntity<User> toggleFavoritePost(@PathVariable Long userId, @RequestBody Map<String, String> body) {
-        String postId = body.get("postId");
-        User updated = userService.toggleFavoritePost(userId, postId);
-        return ResponseEntity.ok(updated);
+    @PutMapping("/{userId}/toggle-post")
+    public ResponseEntity<?> toggleFavoritePost(
+            @PathVariable Long userId,
+            @RequestBody Map<String, String> body) {
+        try {
+            String postId = body.get("postId");
+            System.out.println("postId received: " + postId);
+            if (postId == null || postId.isEmpty()) {
+                return ResponseEntity.badRequest().body(
+                        new MessageResponse("Post ID is required"));
+            }
+
+            User updated = userService.toggleFavoritePost(userId, postId);
+            UserDTO userDTO = userService.convertToDTO(updated);
+            System.out.println("response entity: " + userDTO);
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new MessageResponse("Error toggling favorite: " + e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{userId}/toggle-product")
+    public ResponseEntity<?> toggleFavoriteProduct(
+            @PathVariable Long userId,
+            @RequestBody Map<String, String> body) {
+        try {
+            String productId = body.get("productId");
+            if (productId == null || productId.isEmpty()) {
+                return ResponseEntity.badRequest().body(
+                        new MessageResponse("Product ID is required"));
+            }
+
+            User updated = userService.toggleFavoriteProduct(userId, productId);
+            UserDTO userDTO = userService.convertToDTO(updated);
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new MessageResponse("Error toggling favorite: " + e.getMessage()));
+        }
     }
 }
 

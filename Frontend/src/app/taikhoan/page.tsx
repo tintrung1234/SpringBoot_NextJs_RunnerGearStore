@@ -26,7 +26,7 @@ interface User {
 interface Product {
     _id: string;
     title: string;
-    URL: string;
+    slug: string;
 }
 
 interface Post {
@@ -145,22 +145,27 @@ export default function TaiKhoan() {
         fetchOrders();
     }, [user, activeTab]);
 
+    console.log("User favorites:", user?.favoritesProduct, user?.favoritesPost);
+
     useEffect(() => {
         if (!user?.favoritesProduct?.length) return;
 
         axios
-            .get(`${DOMAIN}/api/products/search`, {
+            .get(`${DOMAIN}/api/products/by-ids`, {
                 params: { ids: user.favoritesProduct.join(',') },
             })
             .then((res) => setFavoritesProduct(res.data))
             .catch((err) => console.error("Error loading favorite products:", err));
     }, [user]);
 
+    console.log('favoritesPost:', favoritesPost);
+    console.log('favoritesProduct:', favoritesProduct);
+
     useEffect(() => {
         if (!user?.favoritesPost?.length) return;
 
         axios
-            .get(`${DOMAIN}/api/posts/search`, {
+            .get(`${DOMAIN}/api/posts/by-ids`, {
                 params: { ids: user.favoritesPost.join(',') },
             })
             .then((res) => setFavoritesPost(res.data))
@@ -496,7 +501,7 @@ export default function TaiKhoan() {
                                     <h3 className="text-[18px] font-bold text-black">{product.title}</h3>
                                     <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3'>
                                         <h3 className='text-[14px] justify-center font-bold text-black underline cursor-pointer'
-                                            onClick={() => window.open(product.URL || "_blank")}>
+                                            onClick={() => (window.location.href = `/productDetail/${encodeURIComponent(product.slug)}`)}>
                                             Xem chi tiết
                                         </h3>
                                         <button className="px-2 py-1 red cursor-pointer transition-color duration-300 rounded-lg"
