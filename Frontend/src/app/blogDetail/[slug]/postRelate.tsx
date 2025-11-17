@@ -116,7 +116,7 @@ export default function PostRelate({ categoryName }: { categoryName: string }) {
                                         <span className="text-gray-500 text-sm">Không có ảnh</span>
                                     </div>
                                 }
-                                <ToggleFavoritePost postId={post._id} postTitle={post.title} />
+                                <ToggleFavoritePost postId={post._id} postTitle={post.title} slug={post.slug} />
                                 <div
                                     className="text-gray-600 text-sm mt-2  line-clamp-2 text-muted"
                                     dangerouslySetInnerHTML={{ __html: post.description }}

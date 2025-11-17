@@ -175,7 +175,7 @@ export default function SearchWrapperClient({
                       {Post.category}
                     </span>
 
-                    <ToggleFavoritePost postId={Post._id} postTitle={Post.title} />
+                    <ToggleFavoritePost postId={Post._id} postTitle={Post.title} slug={Post.slug} />
 
                     <div
                       className="text-gray-600 text-sm mt-2  line-clamp-2 text-muted"
